@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "tdmcosmeticsone:entrepreneur_hat_short",
+    "tdmcosmeticsone:entrepreneur_hat_medium",
+    "tdmcosmeticsone:entrepreneur_hat_tall",
+    "tdmcosmeticsone:hacker_visor",
+    "tdmcosmeticsone:military_cap",
+    "tdmcosmeticsone:ghostvision_goggles"
+  ]
+}

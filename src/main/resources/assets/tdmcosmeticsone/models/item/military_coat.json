@@ -2,8 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "military_coat",
-		"particle": "military_coat"
+		"0": "tdmcosmeticsone:item/military_coat"
 	},
 	"elements": [
 		{

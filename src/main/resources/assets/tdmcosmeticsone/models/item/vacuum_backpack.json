@@ -2,9 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "vacuum_backpack",
-		"1": "vacuum_backpack_anim",
-		"particle": "vacuum_backpack"
+		"0": "tdmcosmeticsone:item/vacuum_backpack",
+		"1": "tdmcosmeticsone:item/vacuum_backpack_layer"
 	},
 	"elements": [
 		{

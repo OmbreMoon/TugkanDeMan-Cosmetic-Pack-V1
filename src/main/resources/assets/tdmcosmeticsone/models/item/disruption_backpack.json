@@ -2,9 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "disruption_backpack",
-		"1": "disruption_backpack_anim",
-		"particle": "disruption_backpack"
+		"0": "tdmcosmeticsone:item/disruption_backpack",
+		"1": "tdmcosmeticsone:item/disruption_backpack_layer"
 	},
 	"elements": [
 		{
@@ -18,32 +17,6 @@
 				"west": {"uv": [1.25, 5.5, 2.5, 8.25], "texture": "#0"},
 				"up": {"uv": [6.5, 4.75, 3.25, 3.5], "texture": "#0"},
 				"down": {"uv": [6.5, 4.75, 3.25, 6], "texture": "#0"}
-			}
-		},
-		{
-			"from": [8.25, -6.11402, 14.24267],
-			"to": [17.75, 17.88598, 14.24267],
-			"rotation": {"angle": 22.5, "axis": "y", "origin": [13, 6.63598, 14.24267]},
-			"faces": {
-				"north": {"uv": [6, 3.75, 10.75, 15.75], "texture": "#1"},
-				"east": {"uv": [0, 0, 0, 4], "texture": "#1"},
-				"south": {"uv": [6, 3.75, 10.75, 15.75], "texture": "#1"},
-				"west": {"uv": [0, 0, 0, 4], "texture": "#1"},
-				"up": {"uv": [0, 0, 4, 0], "texture": "#1"},
-				"down": {"uv": [0, 0, 4, 0], "texture": "#1"}
-			}
-		},
-		{
-			"from": [-2.25, -2.61402, 14.24267],
-			"to": [7.25, 21.38598, 14.24267],
-			"rotation": {"angle": -22.5, "axis": "y", "origin": [3, 6.63598, 14.24267]},
-			"faces": {
-				"north": {"uv": [6, 3.75, 10.75, 15.75], "texture": "#1"},
-				"east": {"uv": [0, 0, 0, 4], "texture": "#1"},
-				"south": {"uv": [6, 3.75, 10.75, 15.75], "texture": "#1"},
-				"west": {"uv": [0, 0, 0, 4], "texture": "#1"},
-				"up": {"uv": [4, 0, 0, 0], "texture": "#1"},
-				"down": {"uv": [4, 0, 0, 0], "texture": "#1"}
 			}
 		},
 		{
@@ -264,7 +237,7 @@
 			"name": "holographic_backpack",
 			"origin": [0, 4.25, -1.75],
 			"color": 0,
-			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 		}
 	]
 }

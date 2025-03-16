@@ -1,9 +1,8 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "builtin/entity",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "TDMC Assets:dollar_balloon"
+		"0": "tdmcosmeticsone:item/dollar_balloon"
 	},
 	"elements": [
 		{
@@ -138,6 +137,11 @@
 			"scale": [0.5, 0.5, 0.5]
 		},
 		"ground": {
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"gui": {
+			"rotation": [0, 180, 0],
+			"translation": [0, -2, 0],
 			"scale": [0.5, 0.5, 0.5]
 		},
 		"fixed": {

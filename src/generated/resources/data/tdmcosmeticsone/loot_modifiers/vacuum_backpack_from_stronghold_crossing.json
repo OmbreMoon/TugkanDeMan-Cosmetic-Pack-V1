@@ -1,0 +1,15 @@
+{
+  "type": "tdmcosmeticsone:add_item",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/stronghold_crossing"
+    },
+    {
+      "chance": 0.15,
+      "condition": "minecraft:random_chance"
+    }
+  ],
+  "firstItem": "tdmcosmeticsone:vacuum_backpack",
+  "secondItem": "minecraft:air"
+}

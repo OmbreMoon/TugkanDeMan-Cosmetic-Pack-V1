@@ -1,0 +1,15 @@
+{
+  "type": "tdmcosmeticsone:add_item",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/end_city_treasure"
+    },
+    {
+      "chance": 0.2,
+      "condition": "minecraft:random_chance"
+    }
+  ],
+  "firstItem": "tdmcosmeticsone:ghostvision_goggles",
+  "secondItem": "minecraft:air"
+}

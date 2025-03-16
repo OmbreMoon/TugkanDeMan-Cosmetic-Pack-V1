@@ -1,125 +1,163 @@
 package com.ombremoon.tdmcosmeticsone;
 
-import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
+import com.ombremoon.tdmcosmeticsone.client.SuitcaseScreen;
+import com.ombremoon.tdmcosmeticsone.client.renderer.MilitaryRocketRenderer;
+import com.ombremoon.tdmcosmeticsone.client.renderer.layer.MatrixLayer;
+import com.ombremoon.tdmcosmeticsone.client.renderer.layer.TDMCosmeticLayer;
+import com.ombremoon.tdmcosmeticsone.common.GlobalLootModifiers;
+import com.ombremoon.tdmcosmeticsone.common.init.EntityInit;
+import com.ombremoon.tdmcosmeticsone.common.init.ItemInit;
+import com.ombremoon.tdmcosmeticsone.common.init.MenuTypeInit;
+import com.ombremoon.tdmcosmeticsone.common.init.MobEffectInit;
+import com.ombremoon.tdmcosmeticsone.common.network.ModNetworking;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-import org.slf4j.Logger;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
-// The value here should match an entry in the META-INF/mods.toml file
-@Mod(TDMCosmeticsOne.MODID)
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@Mod(Constants.MOD_ID)
 public class TDMCosmeticsOne {
-
-    // Define mod id in a common place for everything to reference
-    public static final String MODID = "tdmcosmeticsone";
-    // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
-    // Create a Deferred Register to hold Blocks which will all be registered under the "tdmcosmeticsone" namespace
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "tdmcosmeticsone" namespace
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
-    // Creates a new Block with the id "tdmcosmeticsone:example_block", combining the namespace and path
-    public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register("example_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)));
-    // Creates a new BlockItem with the id "tdmcosmeticsone:example_block", combining the namespace and path
-    public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register("example_block", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties()));
-
-    // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
-    public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register("example_item", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
-            .alwaysEat().nutrition(1).saturationMod(2f).build())));
-
-    // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
-    public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-            output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-            }).build());
 
     public TDMCosmeticsOne() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
-
-        // Register the Deferred Register to the mod event bus so blocks get registered
-        BLOCKS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so items get registered
-        ITEMS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so tabs get registered
-        CREATIVE_MODE_TABS.register(modEventBus);
-
-        // Register ourselves for server and other game events we are interested in
+        modEventBus.addListener(this::gatherData);
         MinecraftForge.EVENT_BUS.register(this);
-
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
-
-        // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        CommonClass.init(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
-        LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
-        if (Config.logDirtBlock)
-            LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
-        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
-
-        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+        event.enqueueWork(ModNetworking::registerPackets);
     }
 
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event)
-    {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
-            event.accept(EXAMPLE_BLOCK_ITEM);
-    }
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
+    private void gatherData(GatherDataEvent event) {
+        PackOutput packOutput = event.getGenerator().getPackOutput();
+        DataGenerator generator = event.getGenerator();
+
+        boolean includeServer = event.includeServer();
+        generator.addProvider(includeServer, new GlobalLootModifiers(packOutput));
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents {
+    @Mod.EventBusSubscriber(modid = Constants.MOD_ID)
+    public static class CommonEvents {
 
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
-            // Some client setup code
-            LOGGER.info("HELLO FROM CLIENT SETUP");
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        public static void onLivingAttack(LivingHurtEvent event) {
+            Entity entity = event.getSource().getEntity();
+            if (entity == null)
+                return;
+
+            if (!(entity instanceof Player player))
+                return;
+
+            AtomicInteger sharpeness = new AtomicInteger();
+            CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
+
+                for (var entry : handler.getCurios().entrySet()) {
+                    IDynamicStackHandler stackHandler = entry.getValue().getStacks();
+
+                    for (int i = 0; i < stackHandler.getSlots(); i++) {
+                        sharpeness.addAndGet(CuriosApi.getCurio(stackHandler.getStackInSlot(i)).map(
+                                curio -> {
+                                    if (curio.getStack().is(ItemInit.MILITARY_CAP.get()) || curio.getStack().is(ItemInit.MILITARY_COAT.get())) {
+                                        return 1;
+                                    }
+                                    return 0;
+                                }
+                        ).orElse(0));
+                    }
+                }
+            });
+            event.setAmount(event.getAmount() + (sharpeness.get() * 0.5F));
+
+            ItemStack itemStack = player.getOffhandItem();
+            if (itemStack.is(ItemInit.HACKING_GAUNTLET.get())) {
+                LivingEntity target = event.getEntity();
+                EntityDimensions dimensions = target.getDimensions(Pose.STANDING);
+                if (dimensions.width <= 1 && dimensions.height <= 3) {
+                    target.addEffect(new MobEffectInstance(MobEffectInit.MATRIX.get(), 100, 0, false, false));
+                    ModNetworking.activateMatrix(target.getId(), true);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onEntityDeath(LivingDeathEvent event) {
+            LivingEntity entity = event.getEntity();
+            if (event.getSource().getEntity() != null && event.getSource().getEntity() instanceof Player player) {
+                var result = CuriosApi.getCuriosInventory(player).orElse(null).findFirstCurio(ItemInit.DOLLAR_BALLOON.get());
+                float f0 = CuriosApi.getCuriosInventory(player).orElse(null).findFirstCurio(ItemInit.MONEY_BAG.get()).isPresent() ? 1.0F : 0.0F;
+                result.ifPresent(slotResult -> {
+                    Random random = new Random();
+                    float f = random.nextFloat(0.0F, 1.0F);
+                    if (f < 0.07 + ((float) EnchantmentHelper.getMobLooting(player) + f0) * 0.01F) {
+                        ItemEntity itemEntity = new ItemEntity(player.level(), entity.getX(), entity.getY(), entity.getZ(), new ItemStack(Items.EMERALD));
+                        player.level().addFreshEntity(itemEntity);
+                    }
+                });
+            }
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public static class ClientModBusEvents {
+
+        @SubscribeEvent
+        public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerEntityRenderer(EntityInit.ROCKET.get(), MilitaryRocketRenderer::new);
+        }
+
+        @SubscribeEvent
+        public static void registerEntityLayers(EntityRenderersEvent.AddLayers event) {
+            for (final String skin : event.getSkins()) {
+                final LivingEntityRenderer<Player, PlayerModel<Player>> playerRenderer = event.getSkin(skin);
+                if (playerRenderer == null)
+                    continue;
+
+                playerRenderer.addLayer(new TDMCosmeticLayer<>(playerRenderer));
+                playerRenderer.addLayer(new MatrixLayer<>(playerRenderer));
+            }
+
+            for (var renders : event.getContext().getEntityRenderDispatcher().renderers.values()) {
+                if (renders instanceof LivingEntityRenderer<?,?>) {
+                    LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> renderer = (LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>) renders;
+                    renderer.addLayer(new MatrixLayer<>(renderer));
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            MenuScreens.register(MenuTypeInit.SUITCASE_MENU.get(), SuitcaseScreen::new);
         }
     }
 }

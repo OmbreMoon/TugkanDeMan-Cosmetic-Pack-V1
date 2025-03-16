@@ -2,8 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "ghostvision_goggles",
-		"particle": "ghostvision_goggles"
+		"0": "tdmcosmeticsone:item/ghostvision_goggles"
 	},
 	"elements": [
 		{
